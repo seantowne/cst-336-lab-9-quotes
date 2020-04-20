@@ -4,52 +4,128 @@
 const express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
+var mysql = require('mysql');
 
 
 
+const production_environment = process.env.PRODUCTION;
+console.log(production_environment);
+
+var connection;
+
+if ( process.env.PRODUCTION == "TRUE"){
+    connection = mysql.createConnection(process.env.JAWSDB_URL);
+}
+else{
+    connection = mysql.createConnection({
+        host: 'localhost',
+        user: 'seantowne',
+        password: 'password',
+        database: 'Lab9'
+    });
+}
+connection.connect();
 
 
-
-
-// set the template engine to ejs
 app.set('view engine', 'ejs');
-
-// Tells node to look in public/ for styles
 app.use(express.static(__dirname + "/public"));
-
-// Middleware
-// accept json
 app.use(bodyParser.json());
-
-// makes data that comes to the server from the client a json object
 app.use(bodyParser.urlencoded({extended: true}));
 
 
 
-// route to base domain
+function buildStatement(firstname, lastname, keyword, catagory, sex){
+    var stmt = "SELECT * FROM l9_author natural join l9_quotes";
+    var searchTerms = [];
+    
+    console.log("First Name: " + firstname);
+    if ( typeof firstname !== 'undefined' && firstname ){
+        searchTerms.push(
+            " l9_author.firstName='" + firstname + "'"  
+        );
+    }
+    
+    console.log("Last Name : " + lastname);
+    if ( typeof lastname !== 'undefined' && lastname ){
+        searchTerms.push(
+            " l9_author.lastName='" + lastname + "'"  
+        );
+    }
+    
+    console.log("Keyword : " + keyword);
+    if ( typeof keyword !== 'undefined' && keyword ){
+        searchTerms.push(
+            " l9_quotes.quote like '%" + keyword + "%'"  
+        );
+    }
+    
+    console.log("Catagory : " + catagory);
+    if ( typeof catagory !== 'undefined' && catagory ){
+        searchTerms.push(
+            " l9_quotes.category='" + catagory + "'"  
+        );
+    }
+    
+    console.log("Sex : " + sex);
+    if ( typeof sex !== 'undefined' && sex ){
+        searchTerms.push(
+            " l9_author.sex='" + sex + "'"  
+        );
+    }
+    
+    console.log("Search Terms Length: " + searchTerms.length.toString());
+    
+    if ( searchTerms.length > 0){
+        stmt += " where";
+        for(var i in searchTerms){
+            stmt += searchTerms[i];
+            if( i == searchTerms.length-1){
+                break;
+            }
+            stmt += " and";
+        }
+    }
+    
+    return stmt+";";
+}
+
+function getCatagories(){
+    stmt = "select distinct category from l9_quotes;"
+    var data = {};
+    connection.query(stmt, function(error, found){
+        if ( error ) throw error;
+        data = found;
+    });
+    return data;
+}
+
 app.get("/", function(req, res){
-    res.render("home.ejs");
+    console.log("/ : GET");
+    firstname = req.query.firstname;
+    lastname = req.query.lastname;
+    keyword = req.query.keyword;
+    catagory = req.query.catagory;
+    sex = req.query.sex;
+    
+    stmt = buildStatement(firstname, lastname, keyword, catagory, sex);
+    console.log(stmt);
+    
+    connection.query( stmt, function(error, found0){
+        if ( error ) throw error;
+        connection.query( "select distinct category from l9_quotes;", function(error, found1){
+            if ( error ) throw error;
+            res.render("home.ejs", { data : found0, cat : found1 })
+        });
+    });
 });
 
-// route to base domain
-app.get("/home", function(req, res){
-    res.render("home.ejs");
-});
 
-
-
-
-
-
-
-// anything that hasn't matched a defined route is caught here
 app.get("/*", function(req, res){
     res.render("error.ejs");
 });
 
 
-// listens for http requests
-// port 3000 is for C9, port 8080 is for Heroku
+
 app.listen(process.env.PORT || 3000 || 8080, function(){
     console.log("Server is running");
 });

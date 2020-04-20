@@ -1,5 +1,62 @@
-<%- include('templates/header.ejs') -%>
+<%- include ('templates/header'); -%>
 
-<h1>Hello, World!</h1>
+<div class='container'>
+	<div class='jumbotron'>
+		<h1> SEARCH FOR POPULAR QUOTES </h1>
+		<hr><br>
+		<form action='/' method='GET'>
+			<div class='form-group row'>
+				
+				
+				<div class='col-sm-2'>
+					<input type='text' class='form-control' id='firstname' name='firstname' placeholder='First Name'>
+				</div>
+				
+				<div class='col-sm-2'>
+					<input type='text' class='form-control' id='lastname' name='lastname' placeholder='Last Name'>
+				</div>
+				
+				<div class='col-sm-2'>
+					<input type='text' class='form-control' id='keyword' name='keyword' placeholder='Keyword'>
+				</div>
+				
+				<div class='col-sm-2'>
+					<select  id="catagory-select" class='form-control' name='catagory' placeholder='Catagory'>
+						<option value="">Catagory</option>
+						<% if ( cat ) { %>
+							<% for(var i in cat){ %>
+								<option value='<%=cat[i].category%>'><%=cat[i].category%></option>
+							<% } %>
+						<% } %>
+					</select>
+				</div>
+				
+								
+				<div class='col-sm-2'>
+					<select  id="sex-select" class='form-control' name='sex' placeholder='Auth. Sex'>
+						<option value="">Auth. Sex</option>
+						<option value="M">Male</option>
+						<option value="F">Female</option>
+					</select>
+				</div>
+				
+				<div class='col-sm-2'>
+					<button class='btn btn-primary btn-block'>Search</button>
+				</div>
+				
+			</div>
+			
+			
+		</form>
+	</div>
+</div>
 
-<%- include('templates/footer.ejs') -%>
+<% if ( data ) { %>
+	<% for (var i in data){ %>
+		<%- include('templates/quote.ejs', {quote:data[i]}) -%>
+	<% } %>
+<% } %>
+
+
+
+<%- include ('templates/footer'); -%>
