@@ -9,12 +9,17 @@ var mysql = require('mysql');
 
 
 const production_environment = process.env.PRODUCTION;
-console.log(production_environment);
+console.log("Production="+production_environment);
 
 var connection;
 
 if ( process.env.PRODUCTION == "TRUE"){
-    connection = mysql.createConnection(process.env.JAWSDB_URL);
+    connection = mysql.createConnection({
+        host: 'us-cdbr-east-06.cleardb.net',
+        user: 'b22500485272d5',
+        password: 'b511a945',
+        database: 'heroku_66ec8100dd2a87c'
+    });
 }
 else{
     connection = mysql.createConnection({
