@@ -137,6 +137,7 @@ app.get("/", function(req, res){
     console.log(stmt);
     
     connection.query( stmt, function(error, found0){
+        console.log(found0);
         if ( error ) throw error;
         connection.query( "select distinct category from l9_quotes;", function(error, found1){
             if ( error ) throw error;

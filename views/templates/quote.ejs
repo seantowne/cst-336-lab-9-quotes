@@ -1,10 +1,5 @@
-<style>
-    #wtf:hover {
-        color: blue;
-        text-decoration: underline;
-    }
-</style>
-<li class="list-group-item"><a id="wtf" data-toggle="modal" data-target="#author<%=quote.authorID%>"><%=quote.firstName%> <%=quote.lastName%></a> : <%=quote.quote%> </li>
+
+<li class="list-group-item"><a id="wtf" data-toggle="modal" data-target="#author<%=quote.authorId%>"><%=quote.firstName%> <%=quote.lastName%></a> : <%=quote.quote%> </li>
 
 
 <!-- Button trigger modal 
@@ -13,7 +8,7 @@
 </button>
 -->
 <!-- Modal -->
-<div class="modal fade" id="author<%=quote.authorID%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="author<%=quote.authorId%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">

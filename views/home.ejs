@@ -50,7 +50,12 @@
 		</form>
 	</div>
 </div>
-
+<style>
+    #wtf:hover {
+        color: blue;
+        text-decoration: underline;
+    }
+</style>
 <% if ( data ) { %>
 	<% for (var i in data){ %>
 		<%- include('templates/quote.ejs', {quote:data[i]}) -%>
